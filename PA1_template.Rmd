@@ -5,7 +5,7 @@ html_document:
         keep_md: true
 ---
 
-```{r setup, include=FALSE}
+```{r , include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
@@ -21,7 +21,7 @@ steps: Number of steps taking in a 5-minute interval (missing values are coded a
 date: The date on which the measurement was taken in YYYY-MM-DD format
 interval: Identifier for the 5-minute interval in which measurement was taken
 
-```{r wd, echo=FALSE}
+```{r , echo=FALSE}
 setwd("E:/R/Reproducible Research/2/Assignment")
 rm(list=ls(all=TRUE)) 
 library(dplyr)
@@ -31,58 +31,58 @@ library(lubridate)
 ```
 ### 1. Code for reading in the dataset and processing the data
 
-```{r data, echo=TRUE}
+```{r, echo=TRUE}
 activity<-read.csv("E:/R/Reproducible Research/2/Assignment/activity.csv", header=TRUE, sep=",")
 summary(activity)
 activity$date<-ymd(activity$date)
 ```
 
 We want to found the total number of steps taken each day. 
-```{r first, echo=TRUE}
+```{r ,echo=TRUE}
 groupActivity <- group_by(activity, date)
 newActivity<-summarize(groupActivity, steps= sum(steps, na.rm = TRUE ))
 newActivity
 ``` 
 ### 2. Histogram of the total number of steps taken each day
-```{r second, echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r ,echo=TRUE}
 hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
 ###3. Mean and median number of steps taken each day
-```{r third, echo=TRUE}
+```{r , echo=TRUE}
 mean(newActivity$steps)
 median(newActivity$steps)
 ```
 
 ###4. Time series plot of the average number of steps taken
 First we fix our dataset and found the average number of steps taken
-```{r time, echo=TRUE}
+```{r , echo=TRUE}
 intervalGroupActivity <- group_by(activity, interval)
 averageActivity<-summarize(intervalGroupActivity, steps= mean(steps, na.rm = TRUE ))
 averageActivity
 ```
 
 And then we make the time series plot
-```{r plot, echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r, echo=TRUE}
 plot(averageActivity$interval,averageActivity$steps, type="l", col="red",main="Time series plot of the 5-minute interval \n and the average number of steps taken", xlab = "The 5-minute interval", ylab = "The average number of steps taken")
 ```
 
 ###5. Which is the 5-minute interval that, on average, contains the maximum number of steps
 
-```{r interval, echo=TRUE}
+```{r, echo=TRUE}
 averageActivity[which.max(averageActivity$steps), ]$interval
 ```
 
 ###6. Code to describe and show a strategy for imputing missing data
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
-```{r NA, echo=TRUE}
+```{r , echo=TRUE}
 summary(activity)
 ```
 So we have 2304 NA's 
 
 2. Devise a strategy for filling in all of the missing values in the dataset. Create a new dataset that is equal to the original dataset but with the missing data filled in. I will use the mean for that 5-minute interval. 
-```{r newdata, echo=TRUE}
+```{r , echo=TRUE}
 newData<-activity
 for (i in 1:nrow(newData))
 {
@@ -98,35 +98,35 @@ So as we can see we don't have any NA's in the new dataset.
 
 3. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r newdatasec, echo=TRUE}
+```{r , echo=TRUE}
 groupNewData <- group_by(newData, date)
 newFillData<-summarize(groupNewData, steps= sum(steps, na.rm = TRUE ))
 newFillData
 ``` 
 ###7. Histogram of the total number of steps taken each day
-```{r hist, echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r , echo=TRUE,fig.keep="all"}
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
 Mean and median number of steps taken each day
-```{r mean, echo=TRUE}
+```{r , echo=TRUE}
 mean(newFillData$steps)
 median(newFillData$steps)
 ```
 So, after imputing the missing data, the new mean of total steps taken per day is the same as that of the old mean; the new median of total steps taken per day is greater than that of the old median.
 We can see from the Histograms the big change is that the NA's have move from the first class. 
 
-```{r histnew, echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r , echo=TRUE}
 par(mfrow=c(1,2))
 hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day \n with no NA's", xlab = "Steps", col = "blue")
 ```
 
 First we have to make our new dataset. 
-```{r newdataset, echo=TRUE}
+```{r, echo=TRUE}
 for (i in 1:nrow(activity))
 {
-  if(weekdays(activity$date[i])=="Σάββατο" |weekdays(activity$date[i])=="Κυριακή"){ 
+  if(weekdays(activity$date[i])=="???????" |weekdays(activity$date[i])=="???????"){ 
     activity$weekdays[i]<-"weekend"
   }else{activity$weekdays[i]<-"weekday"}
 }
@@ -138,7 +138,7 @@ And now we can make the plot.
 
 ###8. Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 
-```{r lastplot, echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r , echo=TRUE}
 qplot(interval,steps, data = dataNA,facets = weekdays~., geom="line",main="Average number of steps per 5-minute interval across weekdays and weekends")
 ```
 
