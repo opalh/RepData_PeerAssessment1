@@ -1,8 +1,10 @@
 ---
 title: "Peer-graded Assignment: Course Project 1"
 output:  
+github_document:
       html_document:  
         keep_md: true
+
 ---
 
 ```{r setup, include=FALSE}
@@ -23,6 +25,7 @@ interval: Identifier for the 5-minute interval in which measurement was taken
 
 ```{r wd, echo=FALSE}
 setwd("E:/R/Reproducible Research/2/Assignment")
+rm(list=ls(all=TRUE)) 
 library(dplyr)
 library(RColorBrewer)
 library(ggplot2)
