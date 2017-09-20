@@ -1,25 +1,141 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "Peer-graded Assignment: Course Project 1"
+output: html_document
 ---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
 
-## Loading and preprocessing the data
+## Introduction
+This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.
 
+The data for this assignment can be downloaded from the course web site:
 
+Dataset: Activity monitoring data [52K]
+The variables included in this dataset are:
 
-## What is mean total number of steps taken per day?
+steps: Number of steps taking in a 5-minute interval (missing values are coded as NA)
+date: The date on which the measurement was taken in YYYY-MM-DD format
+interval: Identifier for the 5-minute interval in which measurement was taken
 
+```{r wd, echo=FALSE}
+setwd("E:/R/Reproducible Research/2/Assignment")
+library(dplyr)
+library(RColorBrewer)
+library(ggplot2)
+library(lubridate)
+```
+### 1. Code for reading in the dataset and processing the data
 
+```{r , echo=TRUE}
+activity<-read.csv("E:/R/Reproducible Research/2/Assignment/activity.csv", header=TRUE, sep=",")
+summary(activity)
+activity$date<-ymd(activity$date)
+```
 
-## What is the average daily activity pattern?
+We want to found the total number of steps taken each day. 
+```{r , echo=TRUE}
+groupActivity <- group_by(activity, date)
+newActivity<-summarize(groupActivity, steps= sum(steps, na.rm = TRUE ))
+newActivity
+``` 
+### 2. Histogram of the total number of steps taken each day
+```{r , echo=TRUE}
+hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
+```
 
+###3. Mean and median number of steps taken each day
+```{r , echo=TRUE}
+mean(newActivity$steps)
+median(newActivity$steps)
+```
 
+###4. Time series plot of the average number of steps taken
+First we fix our dataset and found the average number of steps taken
+```{r , echo=TRUE}
+intervalGroupActivity <- group_by(activity, interval)
+averageActivity<-summarize(intervalGroupActivity, steps= mean(steps, na.rm = TRUE ))
+averageActivity
+```
 
-## Imputing missing values
+And then we make the time series plot
+```{r, echo=TRUE}
+plot(averageActivity$interval,averageActivity$steps, type="l", col="red",main="Time series plot of the 5-minute interval \n and the average number of steps taken", xlab = "The 5-minute interval", ylab = "The average number of steps taken")
+```
 
+###5. Which is the 5-minute interval that, on average, contains the maximum number of steps
 
+```{r, echo=TRUE}
+averageActivity[which.max(averageActivity$steps), ]$interval
+```
 
-## Are there differences in activity patterns between weekdays and weekends?
+###6. Code to describe and show a strategy for imputing missing data
+
+1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
+```{r, echo=TRUE}
+summary(activity)
+```
+So we have 2304 NA's 
+
+2. Devise a strategy for filling in all of the missing values in the dataset. Create a new dataset that is equal to the original dataset but with the missing data filled in. I will use the mean for that 5-minute interval. 
+```{r, echo=TRUE}
+newData<-activity
+for (i in 1:nrow(newData))
+{
+  if (is.na(newData$steps[i])){
+    newData$steps[i]<-averageActivity[which(newData$interval[i] == averageActivity$interval),]$steps
+  }
+}
+summary(newData)
+sum(is.na(newData))
+
+```
+So as we can see we don't have any NA's in the new dataset. 
+
+3. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
+
+```{r , echo=TRUE}
+groupNewData <- group_by(newData, date)
+newFillData<-summarize(groupNewData, steps= sum(steps, na.rm = TRUE ))
+newFillData
+``` 
+###7. Histogram of the total number of steps taken each day
+```{r , echo=TRUE}
+hist(newFillData$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
+```
+
+Mean and median number of steps taken each day
+```{r , echo=TRUE}
+mean(newFillData$steps)
+median(newFillData$steps)
+```
+So, after imputing the missing data, the new mean of total steps taken per day is the same as that of the old mean; the new median of total steps taken per day is greater than that of the old median.
+We can see from the Histograms the big change is that the NA's have move from the first class. 
+
+```{r , echo=TRUE}
+par(mfrow=c(1,2))
+hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
+hist(newFillData$steps, breaks=8,main = "Total number of steps per day \n with no NA's", xlab = "Steps", col = "blue")
+```
+
+First we have to make our new dataset. 
+```{r , echo=TRUE}
+for (i in 1:nrow(activity))
+{
+  if(weekdays(activity$date[i])=="Σάββατο" |weekdays(activity$date[i])=="Κυριακή"){ 
+    activity$weekdays[i]<-"weekend"
+  }else{activity$weekdays[i]<-"weekday"}
+}
+
+intervalGroupActivityNA <- group_by(activity, interval,weekdays)
+dataNA<-summarize(intervalGroupActivityNA, steps= mean(steps, na.rm = TRUE ))
+```
+And now we can make the plot. 
+
+###8. Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
+
+```{r , echo=TRUE}
+qplot(interval,steps, data = dataNA,facets = weekdays~., geom="line",main="Average number of steps per 5-minute interval across weekdays and weekends")
+```
+
