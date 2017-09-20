@@ -3,7 +3,6 @@ title: "Peer-graded Assignment: Course Project 1"
 output:  
 html_document:
         keep_md: true
- 
 ---
 
 ```{r setup, include=FALSE}
