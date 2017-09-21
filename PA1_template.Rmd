@@ -1,8 +1,8 @@
 ---
 title: "Peer-graded Assignment: Course Project 1"
 output:  
-html_document: 
-    fig_caption: yes
+   html_document: 
+    keep_md: yes 
 ---
 
 ```{r , include=FALSE}
@@ -46,7 +46,7 @@ newActivity<-summarize(groupActivity, steps= sum(steps, na.rm = TRUE ))
 newActivity
 ``` 
 ### 2. Histogram of the total number of steps taken each day
-```{r fig.cap="plot_a",echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r plot_a,echo=TRUE,fig.keep="all", fig.show="asis"}
 hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
@@ -65,7 +65,7 @@ averageActivity
 ```
 
 And then we make the time series plot
-```{r fig.cap="plot_b", echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r plot_b, echo=TRUE,fig.keep="all", fig.show="asis"}
 plot(averageActivity$interval,averageActivity$steps, type="l", col="red",main="Time series plot of the 5-minute interval \n and the average number of steps taken", xlab = "The 5-minute interval", ylab = "The average number of steps taken")
 ```
 
@@ -106,7 +106,7 @@ newFillData<-summarize(groupNewData, steps= sum(steps, na.rm = TRUE ))
 newFillData
 ``` 
 ###7. Histogram of the total number of steps taken each day
-```{r fig.cap="plot_c", echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r plot_c, echo=TRUE,fig.keep="all", fig.show="asis"}
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
@@ -118,7 +118,7 @@ median(newFillData$steps)
 So, after imputing the missing data, the new mean of total steps taken per day is the same as that of the old mean; the new median of total steps taken per day is greater than that of the old median.
 We can see from the Histograms the big change is that the NA's have move from the first class. 
 
-```{r fig.cap="plot_d", echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r plot_d, echo=TRUE,fig.keep="all", fig.show="asis"}
 par(mfrow=c(1,2))
 hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day \n with no NA's", xlab = "Steps", col = "blue")
@@ -140,7 +140,7 @@ And now we can make the plot.
 
 ###8. Panel plot comparing the average number of steps taken per 5-minute interval across weekdays and weekends
 
-```{r fig.cap="plot_e", echo=TRUE,fig.keep="all", fig.show="asis"}
+```{r plot_e, echo=TRUE,fig.keep="all", fig.show="asis"}
 qplot(interval,steps, data = dataNA,facets = weekdays~., geom="line")
 
 ```

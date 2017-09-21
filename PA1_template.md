@@ -1,8 +1,3 @@
----
-output: 
-  html_document: 
-    keep_md: yes
----
 # Peer-graded Assignment: Course Project 1
 
 
@@ -100,7 +95,7 @@ newActivity
 hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-3-1.png)<!-- -->
+![](PA1_template_files/figure-html/plot_a-1.png)<!-- -->
 
 ###3. Mean and median number of steps taken each day
 
@@ -152,7 +147,7 @@ And then we make the time series plot
 plot(averageActivity$interval,averageActivity$steps, type="l", col="red",main="Time series plot of the 5-minute interval \n and the average number of steps taken", xlab = "The 5-minute interval", ylab = "The average number of steps taken")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](PA1_template_files/figure-html/plot_b-1.png)<!-- -->
 
 ###5. Which is the 5-minute interval that, on average, contains the maximum number of steps
 
@@ -248,7 +243,7 @@ newFillData
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day", xlab = "Steps", col = "blue")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](PA1_template_files/figure-html/plot_c-1.png)<!-- -->
 
 Mean and median number of steps taken each day
 
@@ -277,7 +272,7 @@ hist(newActivity$steps, breaks=8,main = "Total number of steps per day", xlab = 
 hist(newFillData$steps, breaks=8,main = "Total number of steps per day \n with no NA's", xlab = "Steps", col = "blue")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-13-1.png)<!-- -->
+![](PA1_template_files/figure-html/plot_d-1.png)<!-- -->
 
 First we have to make our new dataset. 
 
@@ -298,8 +293,7 @@ And now we can make the plot.
 
 
 ```r
-qplot(interval,steps, data = dataNA,facets = weekdays~., geom="line",main="Average number of steps per 5-minute interval across weekdays and weekends")
+qplot(interval,steps, data = dataNA,facets = weekdays~., geom="line")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
-
+![](PA1_template_files/figure-html/plot_e-1.png)<!-- -->
